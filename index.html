@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>One Month Love Letter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&family=Padauk:wght@400;700&display=swap');
-
   :root {
     --bg-gradient: radial-gradient(circle at center, #2e0f21 0%, #15050f 50%, #080206 100%);
     --envelope-color: #6b1835;
@@ -199,6 +200,30 @@
     border: 1px solid #f2e3e8;
   }
 
+  .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(184, 29, 72, 0.08);
+    color: #b81d48;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 6;
+    transition: background 0.2s ease;
+  }
+  .close-btn:hover,
+  .close-btn:focus-visible {
+    background: rgba(184, 29, 72, 0.18);
+  }
+
   .corner-heart {
     position: absolute;
     font-size: 14px;
@@ -355,13 +380,14 @@
         <div class="pocket-overlay"></div>
 
         <!-- Expanding Letter -->
-        <div class="letter">
+        <div class="letter" onclick="event.stopPropagation()">
+          <button class="close-btn" onclick="closeEnvelope(event)" aria-label="Close letter">✕</button>
           <span class="corner-heart top-left">♥</span>
           <span class="corner-heart top-right">♥</span>
           <span class="corner-heart bottom-left">♥</span>
           <span class="corner-heart bottom-right">♥</span>
 
-          <div class="letter-inner" id="letterContainer">
+          <div class="letter-inner" id="letterContainer" onclick="handleLetterTap(event)">
             <div class="letter-header">
               <h1>One Month With You</h1>
               <div class="date">♡ Our Beautiful Beginning ♡</div>
@@ -486,11 +512,14 @@
   ];
 
   let typingActive = false;
+  let skipRequested = false;
 
   async function startTypewriter() {
     typingActive = true;
+    skipRequested = false;
     const contentDiv = document.getElementById('typewriterContent');
     const signature = document.getElementById('signature');
+    const container = document.getElementById('letterContainer');
     contentDiv.innerHTML = '';
     signature.style.opacity = '0';
 
@@ -504,16 +533,28 @@
       p.appendChild(cursor);
 
       const text = paragraphs[i];
-      for (let charIndex = 0; charIndex < text.length; charIndex++) {
-        if (!typingActive) return;
-        p.insertBefore(document.createTextNode(text[charIndex]), cursor);
-
-        const container = document.getElementById('letterContainer');
-        container.scrollTop = container.scrollHeight;
-        /* Slowed down typewriter speed from 35ms to 75ms per character */
-        await new Promise(res => setTimeout(res, 75));
+      if (skipRequested) {
+        /* Already skipped earlier: drop this whole paragraph in instantly */
+        p.insertBefore(document.createTextNode(text), cursor);
+      } else {
+        for (let charIndex = 0; charIndex < text.length; charIndex++) {
+          if (!typingActive) return;
+          if (skipRequested) {
+            /* Tapped mid-paragraph: finish just this paragraph instantly */
+            p.insertBefore(document.createTextNode(text.slice(charIndex)), cursor);
+            break;
+          }
+          p.insertBefore(document.createTextNode(text[charIndex]), cursor);
+          container.scrollTop = container.scrollHeight;
+          /* Slowed down typewriter speed from 35ms to 75ms per character */
+          await new Promise(res => setTimeout(res, 75));
+        }
       }
-      await new Promise(res => setTimeout(res, 400));
+
+      container.scrollTop = container.scrollHeight;
+      if (!skipRequested) {
+        await new Promise(res => setTimeout(res, 400));
+      }
     }
 
     if (typingActive) {
@@ -522,22 +563,43 @@
     }
   }
 
+  /* Tap anywhere on the letter text while typing to reveal it instantly */
+  function handleLetterTap(event) {
+    event.stopPropagation();
+    if (typingActive && !skipRequested) {
+      skipRequested = true;
+    }
+  }
+
   function toggleEnvelope() {
     const envelope = document.getElementById('envelopeWrapper');
-    const isOpen = envelope.classList.toggle('open');
-    const hint = document.getElementById('hintText');
-    
-    if (isOpen) {
-      hint.style.setProperty('opacity', '0', 'important');
-      hint.style.animationPlayState = 'paused';
-      setTimeout(startTypewriter, 500);
+    if (envelope.classList.contains('open')) {
+      closeEnvelope();
     } else {
-      hint.style.removeProperty('opacity');
-      hint.style.animationPlayState = 'running';
-      typingActive = false;
-      document.getElementById('typewriterContent').innerHTML = '';
-      document.getElementById('signature').style.opacity = '0';
+      openEnvelope();
     }
+  }
+
+  function openEnvelope() {
+    const envelope = document.getElementById('envelopeWrapper');
+    envelope.classList.add('open');
+    const hint = document.getElementById('hintText');
+    hint.style.setProperty('opacity', '0', 'important');
+    hint.style.animationPlayState = 'paused';
+    setTimeout(startTypewriter, 500);
+  }
+
+  function closeEnvelope(event) {
+    if (event) event.stopPropagation();
+    const envelope = document.getElementById('envelopeWrapper');
+    envelope.classList.remove('open');
+    const hint = document.getElementById('hintText');
+    hint.style.removeProperty('opacity');
+    hint.style.animationPlayState = 'running';
+    typingActive = false;
+    skipRequested = false;
+    document.getElementById('typewriterContent').innerHTML = '';
+    document.getElementById('signature').style.opacity = '0';
   }
 </script>
 </body>
