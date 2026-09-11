@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>One Month Love Letter</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&family=Padauk:wght@400;700&display=swap');
 
   :root {
     --bg-gradient: radial-gradient(circle at center, #2e0f21 0%, #15050f 50%, #080206 100%);
@@ -30,7 +30,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Padauk', 'Montserrat', sans-serif;
     overflow-x: hidden;
     position: relative;
     padding: 20px;
@@ -247,19 +247,21 @@
   }
 
   .letter-content {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    line-height: 1.65;
+    font-family: 'Padauk', serif;
+    font-size: 16px;
+    line-height: 1.8;
     color: var(--text-color);
   }
   .letter-content p { margin-bottom: 14px; }
 
+  /* GOLDEN CURSOR */
   .cursor {
     display: inline-block;
     width: 2px;
-    height: 16px;
-    background-color: #b81d48;
+    height: 18px;
+    background-color: #d4af37;
     margin-left: 2px;
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.8);
     animation: blink 0.8s infinite;
     vertical-align: middle;
   }
@@ -319,7 +321,7 @@
     opacity: 1;
     transition: opacity 0.5s ease 0.55s;
   }
-  
+
   /* Hides hint when letter is open */
   .main-container:has(.envelope-wrapper.open) .hint {
     opacity: 0 !important;
@@ -337,7 +339,7 @@
   <canvas id="particles-canvas"></canvas>
 
   <div class="main-container">
-    
+
     <!-- Day Counter Banner -->
     <div class="counter-card">
       <div class="counter-title">Together For</div>
@@ -364,13 +366,13 @@
               <h1>One Month With You</h1>
               <div class="date">♡ Our Beautiful Beginning ♡</div>
             </div>
-            
+
             <div class="divider"></div>
             <div class="letter-content" id="typewriterContent"></div>
-            
+
             <div class="signature" id="signature">
-              Forever yours,<br>
-              <span>With all my heart</span>
+              Forever your's Ko Ko,<br>
+              <span>With all my heart 🤍</span>
             </div>
           </div>
         </div>
@@ -383,7 +385,7 @@
 
 <script>
   /* Dynamic Day Counter Logic */
-  const startDate = new Date(2026, 7, 12); 
+  const startDate = new Date(2026, 7, 12);
 
   function updateDayCounter() {
     const today = new Date();
@@ -470,14 +472,17 @@
   initParticles();
   animateParticles();
 
-  /* Paragraph Typewriter Sequence */
+  /* Paragraph Typewriter Sequence in Myanmar with Emojis */
   const paragraphs = [
-    "My dearest love,",
-    "One whole month has passed since the day you walked into my life and quietly rearranged everything I thought I knew about happiness.",
-    "In these thirty days, you have become my favorite notification, my softest place to land, and the reason I smile at my phone like a fool.",
-    "Thank you for the late-night talks, the silly jokes, and for simply being you.",
-    "I don’t know what the future holds, but I know I want every version of it with you.",
-    "Here’s to month one… and to every month that follows."
+    "ကိုကိုတို့ ချစ်သူတွေဖြစ်တာ ဒီနေ့ဆိုရင် (၁) လတောင် ပြည့်ပြီနော်... 💖 အချိန်တွေ ကုန်တာ သိပ်မြန်တာပဲ ✨",
+    "ပထမဆုံး ကိုကို ပြောချင်တာက... ကိုကို့ကို ချစ်သူအဖြစ် ရွေးချယ်ပေးခဲ့လို့ Bae ကို ကျေးဇူးတင်တယ်နော် 💕",
+    "ဒီ (၁) လပြည့်လေးကနေစပြီး တူတူပေါင်းဖက်ရတဲ့အချိန်အထိ တူတူရှိသွားကြမယ်နော် 💍✨",
+    "အခုလို လူချင်း ဝေးနေကြပေမဲ့လည်း တစ်ယောက်နဲ့တစ်ယောက် ရင်ဖက်ချင်းနီး တယ်လို့ ကိုကိုကတော့ခံစားရတယ် ❤️ Bae လည်း ကိုကိုလိုပဲ ခံစားရမယ် လိုကိုကိုထင်ပါတယ် 🥺💖",
+    "ရှေ့ဆက်ရမယ့် လမ်းတစ်လျှောက်မှာ အခက်အခဲတွေ ရှိလာခဲ့ရင်လည်း တစ်ယောက်လက်ကိုတစ်ယောက် မလွှတ်ကြေးနော်... 🤝💕 အတူတူ ရင်ဆိုင်ကျော်ဖြတ်ရင်း ပိုပြီး သန်မာတဲ့ အချစ်တွေနဲ့ နေ့ရက်တိုင်းကို သစ္စာရှိရှိ အတူတူ ဖြတ်သန်းသွားကြရအောင် 🌹✨",
+    "Bae ပြောခဲ့ဖူးသလို... ကိုကို့အချစ်ကို အသိအမှတ်ပြုပေးမယ့်အချိန်၊ တရားဝင် Official ချပြပေးမယ့် အချိန်ကိုလည်း ကိုကိုမျော်လင့်နေပါတယ်နော် 🙈🤍",
+    "Bae ကို ဘယ်တော့မှ နာကျင်ခံစားရအောင် မလုပ်ပါဘူးလို့ ကိုကို့ဘက်က ကတိပေးပါတယ် 🫶💖",
+    "ကိုကိုတို့ နှစ် ယောက်အတူရှိခဲ့ကြတဲ့ အချိန်လေးတွေကိုလည်း ကိုကို့ဖက်က အမြဲသတိရနေပါတယ် ✨",
+    "အရမ်းချစ်တယ် 🤍"
   ];
 
   let typingActive = false;
@@ -502,12 +507,13 @@
       for (let charIndex = 0; charIndex < text.length; charIndex++) {
         if (!typingActive) return;
         p.insertBefore(document.createTextNode(text[charIndex]), cursor);
-        
+
         const container = document.getElementById('letterContainer');
         container.scrollTop = container.scrollHeight;
-        await new Promise(res => setTimeout(res, 35));
+        /* Slowed down typewriter speed from 35ms to 75ms per character */
+        await new Promise(res => setTimeout(res, 75));
       }
-      await new Promise(res => setTimeout(res, 300));
+      await new Promise(res => setTimeout(res, 400));
     }
 
     if (typingActive) {
