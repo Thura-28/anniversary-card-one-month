@@ -514,6 +514,16 @@
   let typingActive = false;
   let skipRequested = false;
 
+  /* Split by grapheme cluster (not raw JS char) so combining scripts like
+     Burmese don't get sliced mid-character and render as broken glyphs. */
+  function graphemes(str) {
+    if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+      const seg = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+      return Array.from(seg.segment(str), s => s.segment);
+    }
+    return Array.from(str); /* fallback for very old browsers */
+  }
+
   async function startTypewriter() {
     typingActive = true;
     skipRequested = false;
@@ -532,19 +542,19 @@
       contentDiv.appendChild(p);
       p.appendChild(cursor);
 
-      const text = paragraphs[i];
+      const chars = graphemes(paragraphs[i]);
       if (skipRequested) {
         /* Already skipped earlier: drop this whole paragraph in instantly */
-        p.insertBefore(document.createTextNode(text), cursor);
+        p.insertBefore(document.createTextNode(chars.join('')), cursor);
       } else {
-        for (let charIndex = 0; charIndex < text.length; charIndex++) {
+        for (let charIndex = 0; charIndex < chars.length; charIndex++) {
           if (!typingActive) return;
           if (skipRequested) {
             /* Tapped mid-paragraph: finish just this paragraph instantly */
-            p.insertBefore(document.createTextNode(text.slice(charIndex)), cursor);
+            p.insertBefore(document.createTextNode(chars.slice(charIndex).join('')), cursor);
             break;
           }
-          p.insertBefore(document.createTextNode(text[charIndex]), cursor);
+          p.insertBefore(document.createTextNode(chars[charIndex]), cursor);
           container.scrollTop = container.scrollHeight;
           /* Slowed down typewriter speed from 35ms to 75ms per character */
           await new Promise(res => setTimeout(res, 75));
